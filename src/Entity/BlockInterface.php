@@ -22,6 +22,7 @@ interface BlockInterface extends ResourceInterface, TranslatableInterface
     const TEXT_BLOCK_TYPE = 'text';
     const IMAGE_BLOCK_TYPE = 'image';
     const HTML_BLOCK_TYPE = 'html';
+    const PRODUCT_BLOCK_TYPE = 'product';
 
     /**
      * @return string

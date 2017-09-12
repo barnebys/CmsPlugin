@@ -24,6 +24,7 @@ final class RenderBlockExtension extends \Twig_Extension
     const TEXT_BLOCK_TEMPLATE = 'BitBagCmsPlugin:Block:textBlock.html.twig';
     const HTML_BLOCK_TEMPLATE = 'BitBagCmsPlugin:Block:htmlBlock.html.twig';
     const IMAGE_BLOCK_TEMPLATE = 'BitBagCmsPlugin:Block:imageBlock.html.twig';
+    const PRODUCT_BLOCK_TEMPLATE = 'BitBagCmsPlugin:Block:productBlock.html.twig';
 
     /**
      * @var BlockRepositoryInterface
@@ -92,6 +93,11 @@ final class RenderBlockExtension extends \Twig_Extension
         if (BlockInterface::IMAGE_BLOCK_TYPE === $block->getType()) {
 
             return $twigEnvironment->render(self::IMAGE_BLOCK_TEMPLATE, ['block' => $block]);
+        }
+
+        if (BlockInterface::PRODUCT_BLOCK_TYPE === $block->getType()) {
+
+            return $twigEnvironment->render(self::PRODUCT_BLOCK_TEMPLATE, ['block' => $block]);
         }
 
         throw new TemplateTypeNotFound($block->getType());

@@ -14,6 +14,8 @@ use BitBag\CmsPlugin\Entity\BlockInterface;
 use BitBag\CmsPlugin\Form\Type\Translation\HtmlBlockTranslationType;
 use BitBag\CmsPlugin\Form\Type\Translation\ImageBlockTranslationType;
 use BitBag\CmsPlugin\Form\Type\Translation\TextBlockTranslationType;
+use BitBag\CmsPlugin\Form\Type\Translation\ProductBlockTranslationType;
+use Sylius\Bundle\ProductBundle\Form\Type\ProductAutocompleteChoiceType;
 use Sylius\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Sylius\Bundle\ResourceBundle\Form\Type\ResourceTranslationsType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -76,6 +78,21 @@ final class BlockType extends AbstractResourceType
                 'label' => 'bitbag.cms.form.images',
                 'entry_type' => ImageBlockTranslationType::class,
             ]);
+
+            return;
+        }
+
+        if (BlockInterface::PRODUCT_BLOCK_TYPE === $block->getType()) {
+            $builder
+                ->add('translations', ResourceTranslationsType::class, [
+                'label' => 'bitbag.cms.form.contents',
+                'entry_type' => ProductBlockTranslationType::class,
+                ])
+                ->add('products', ProductAutocompleteChoiceType::class, [
+                    'label' => 'bitbag.cms.products',
+                    'multiple' => true,
+                ])
+            ;
 
             return;
         }

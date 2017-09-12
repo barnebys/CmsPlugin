@@ -6,6 +6,9 @@
             {{ form_errors(form) }}
             {{ form_row(form.code) }}
             {{ form_row(form.enabled) }}
+            {% if form.products is defined %}
+                {{ form_row(form.products) }}
+            {% endif %}
         </div>
     </div>
 </div>

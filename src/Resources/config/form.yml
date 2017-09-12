@@ -23,6 +23,12 @@ services:
         tags:
             - { name: form.type }
 
+    bitbag.cms_plugin.form.type.translation.product_block:
+        class: BitBag\CmsPlugin\Form\Type\Translation\ProductBlockTranslationType
+        arguments: ['%bitbag.model.block_translation.class%', ['bitbag']]
+        tags:
+            - { name: form.type }
+
     bitbag.cms_plugin.form.type.image:
         class: BitBag\CmsPlugin\Form\Type\ImageType
         arguments: ['BitBag\CmsPlugin\Entity\Image', ['bitbag']]

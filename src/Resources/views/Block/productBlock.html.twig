@@ -1,0 +1,8 @@
+<div>
+    <h2>{{ block.name }}</h2>
+
+    {% if null != block.products %}
+        {% include '@SyliusShop/Product/_horizontalList.html.twig' with {'products': block.products} %}
+    {% endif %}
+
+</div>
