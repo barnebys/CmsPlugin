@@ -8,6 +8,8 @@
  * an email on kontakt@bitbag.pl.
  */
 
+declare(strict_types=1);
+
 namespace BitBag\CmsPlugin\Form\Type;
 
 use BitBag\CmsPlugin\Entity\BlockInterface;
@@ -31,7 +33,7 @@ final class BlockType extends AbstractResourceType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var BlockInterface $block */
         $block = $builder->getData();
@@ -57,7 +59,7 @@ final class BlockType extends AbstractResourceType
      * @param FormBuilderInterface $builder
      * @param BlockInterface $block
      */
-    private function resolveBlockType(BlockInterface $block, FormBuilderInterface $builder)
+    private function resolveBlockType(BlockInterface $block, FormBuilderInterface $builder): void
     {
         if (BlockInterface::TEXT_BLOCK_TYPE === $block->getType()) {
             $builder->add('translations', ResourceTranslationsType::class, [
@@ -101,7 +103,7 @@ final class BlockType extends AbstractResourceType
     /**
      * {@inheritdoc}
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'bitbag_cms_plugin_block';
     }
