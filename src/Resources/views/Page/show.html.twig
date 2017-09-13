@@ -19,7 +19,7 @@
     <div class="ui segment">
         <h1 class="ui dividing header">{{ resource.name }}</h1>
 
-        <div>{{ resource.content|raw }}</div>
+        <div>{{ bitbag_render_content(resource.content|raw) }}</div>
     </div>
 
     {% if null != resource.products %}

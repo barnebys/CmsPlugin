@@ -18,3 +18,13 @@ services:
 
         tags:
             - { name: twig.extension }
+
+    bitbag.cms_plugin.twig.extension.page:
+        class: BitBag\CmsPlugin\Twig\Extension\RenderPageExtension
+        public: false
+        arguments:
+            - '@bitbag.repository.block'
+            - '@logger'
+
+        tags:
+            - { name: twig.extension }
