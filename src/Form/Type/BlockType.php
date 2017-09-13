@@ -44,6 +44,10 @@ final class BlockType extends AbstractResourceType
             ->add('enabled', CheckboxType::class, [
                 'label' => 'bitbag.cms.form.enabled',
             ])
+            ->add('products', ProductAutocompleteChoiceType::class, [
+                'label' => 'bitbag.cms.products',
+                'multiple' => true,
+            ])
         ;
 
         $this->resolveBlockType($block, $builder);
@@ -87,10 +91,6 @@ final class BlockType extends AbstractResourceType
                 ->add('translations', ResourceTranslationsType::class, [
                 'label' => 'bitbag.cms.form.contents',
                 'entry_type' => ProductBlockTranslationType::class,
-                ])
-                ->add('products', ProductAutocompleteChoiceType::class, [
-                    'label' => 'bitbag.cms.products',
-                    'multiple' => true,
                 ])
             ;
 
