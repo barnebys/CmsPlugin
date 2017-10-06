@@ -62,4 +62,23 @@ class PageRepository extends EntityRepository implements PageRepositoryInterface
 
         return $page;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findOneByLocaleAndCode(string $locale, string $code): ?PageInterface
+    {
+        $page = $this->createQueryBuilder('o')
+            ->addSelect('translation')
+            ->innerJoin('o.translations', 'translation', 'WITH', 'translation.locale = :locale')
+            ->andWhere('o.code = :code')
+            ->andWhere('o.enabled = true')
+            ->setParameter('locale', $locale)
+            ->setParameter('code', $code)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+
+        return $page;
+    }
 }

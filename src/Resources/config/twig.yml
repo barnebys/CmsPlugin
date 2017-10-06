@@ -23,7 +23,9 @@ services:
         class: BitBag\CmsPlugin\Twig\Extension\RenderPageExtension
         public: false
         arguments:
+            - '@bitbag.repository.page'
             - '@bitbag.repository.block'
+            - '@sylius.context.locale'
             - '@logger'
 
         tags:

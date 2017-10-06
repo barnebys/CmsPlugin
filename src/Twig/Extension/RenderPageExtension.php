@@ -11,10 +11,9 @@
 namespace BitBag\CmsPlugin\Twig\Extension;
 
 use BitBag\CmsPlugin\Entity\PageInterface;
-use BitBag\CmsPlugin\Entity\BlockInterface;
-use BitBag\CmsPlugin\Exception\TemplateTypeNotFound;
 use BitBag\CmsPlugin\Repository\PageRepositoryInterface;
 use BitBag\CmsPlugin\Repository\BlockRepositoryInterface;
+use \Sylius\Component\Locale\Context\LocaleContextInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -23,6 +22,7 @@ use Psr\Log\LoggerInterface;
  */
 final class RenderPageExtension extends \Twig_Extension
 {
+    const PAGE_CONTENT_TEMPLATE = 'BitBagCmsPlugin:Page:content.html.twig';
 
     const BLOCK_PATTERN = '/\[([^\]]*)\]/';
 
@@ -30,6 +30,16 @@ final class RenderPageExtension extends \Twig_Extension
      * @var BlockRepositoryInterface
      */
     private $blockRepository;
+
+    /**
+     * @var PageRepositoryInterface
+     */
+    private $pageRepository;
+
+    /**
+     * @var string
+     */
+    private $locale;
 
     /**
      * @var LoggerInterface
@@ -43,14 +53,22 @@ final class RenderPageExtension extends \Twig_Extension
     private $environment;
 
     /**
+     * RenderPageExtension constructor.
+     * @param PageRepositoryInterface $pageRepository
      * @param BlockRepositoryInterface $blockRepository
+     * @param LocaleContextInterface $localeContext
      * @param LoggerInterface $logger
      */
     public function __construct(
+        PageRepositoryInterface $pageRepository,
         BlockRepositoryInterface $blockRepository,
+        LocaleContextInterface $localeContext,
         LoggerInterface $logger
     )
     {
+
+        $this->locale = $localeContext->getLocaleCode();
+        $this->pageRepository = $pageRepository;
         $this->blockRepository = $blockRepository;
         $this->logger = $logger;
     }
@@ -70,6 +88,7 @@ final class RenderPageExtension extends \Twig_Extension
     {
         return [
             new \Twig_SimpleFunction('bitbag_render_content', [$this, 'renderContent'], ['needs_environment' => true, 'is_safe' => ['html'],]),
+            new \Twig_SimpleFunction('bitbag_render_page', [$this, 'renderPage'], ['needs_environment' => true, 'is_safe' => ['html'],]),
         ];
     }
 
@@ -92,5 +111,23 @@ final class RenderPageExtension extends \Twig_Extension
         );
 
         return $content;
+    }
+
+    public function renderPage(\Twig_Environment $twigEnvironment, $code)
+    {
+
+        $page = $this->pageRepository->findOneByLocaleAndCode($this->locale, $code);
+
+        if (false === $page instanceof PageInterface) {
+
+            $this->logger->warning(sprintf(
+                'Page with "%s" code was not found in the database.',
+                $code
+            ));
+
+            return null;
+        }
+
+        return $twigEnvironment->render(self::PAGE_CONTENT_TEMPLATE, ['resource' => $page]);
     }
 }
