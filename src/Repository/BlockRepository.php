@@ -25,9 +25,13 @@ class BlockRepository extends EntityRepository implements BlockRepositoryInterfa
     /**
      * {@inheritdoc}
      */
-    public function createListQueryBuilder(): QueryBuilder
+    public function createListQueryBuilder(string $locale): QueryBuilder
     {
-        return $this->createQueryBuilder('o');
+        return $this->createQueryBuilder('o')
+            ->innerJoin('o.translations', 'translation')
+            ->where('translation.locale = :locale')
+            ->setParameter('locale', $locale)
+        ;
     }
 
     /**
