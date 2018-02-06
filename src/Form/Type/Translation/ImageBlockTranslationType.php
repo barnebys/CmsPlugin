@@ -36,6 +36,10 @@ final class ImageBlockTranslationType extends AbstractResourceType
                 'label' => 'bitbag.cms.form.link',
                 'required' => false,
             ])
+            ->add('content', TextType::class, [
+                'label' => 'bitbag.cms.form.content',
+                'required' => false,
+            ])
             ->add('image', ImageType::class, [
                 'label' => false,
             ])
