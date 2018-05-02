@@ -24,7 +24,7 @@ final class RenderPageExtension extends \Twig_Extension
 {
     const PAGE_CONTENT_TEMPLATE = 'BitBagCmsPlugin:Page:content.html.twig';
 
-    const BLOCK_PATTERN = '/\[([^\]]*)\]/';
+    const BLOCK_PATTERN = '/\[([\w-_]+)([^\]]*)?\](?:(.+?)?\[\/\1\])?/';
 
     /**
      * @var BlockRepositoryInterface
@@ -105,7 +105,17 @@ final class RenderPageExtension extends \Twig_Extension
         $content = preg_replace_callback(
             self::BLOCK_PATTERN,
             function($matches) use ($block, $twigEnvironment) {
-                return $block->renderBlock($twigEnvironment, $matches[1]);
+
+                if(empty($v)) {
+                    return false;
+                }
+
+                $params = array_map(function($v) {
+                    [$key, $value] = explode("=", $v);
+                    return [$key => str_replace(['"', '\'',], '', $value)];
+                }, explode(" ", trim($matches[2])));
+
+                return $block->renderBlock($twigEnvironment, $matches[1], $params);
             },
             $content
         );
