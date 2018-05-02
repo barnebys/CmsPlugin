@@ -25,7 +25,7 @@ final class RenderPageExtension extends \Twig_Extension
     const PAGE_CONTENT_TEMPLATE = 'BitBagCmsPlugin:Page:content.html.twig';
 
     const BLOCK_PATTERN = '/\[([\w-_]+)([^\]]*)?\](?:(.+?)?\[\/\1\])?/';
-
+    const ATTRIBUTE_PATTERN = "/(\w+)\s*=\s*\"([^\"]*)\"(?:\s|$)|(\w+)\s*=\s*\'([^\']*)\'(?:\s|$)|(\w+)\s*=\s*([^\s\'\"]+)(?:\s|$)|\"([^\"]*)\"(?:\s|$)|(\S+)(?:\s|$)/";
     /**
      * @var BlockRepositoryInterface
      */
@@ -106,16 +106,25 @@ final class RenderPageExtension extends \Twig_Extension
             self::BLOCK_PATTERN,
             function($matches) use ($block, $twigEnvironment) {
 
-                if(empty($v)) {
-                    return false;
+                $text = preg_replace("/[\x{00a0}\x{200b}]+/u", " ", $matches[2]);
+                if ( preg_match_all(self::ATTRIBUTE_PATTERN, $text, $match, PREG_SET_ORDER) ) {
+                    foreach ($match as $m) {
+                        if (!empty($m[1]))
+                            $atts[strtolower($m[1])] = stripcslashes($m[2]);
+                        elseif (!empty($m[3]))
+                            $atts[strtolower($m[3])] = stripcslashes($m[4]);
+                        elseif (!empty($m[5]))
+                            $atts[strtolower($m[5])] = stripcslashes($m[6]);
+                        elseif (isset($m[7]) and strlen($m[7]))
+                            $atts[] = stripcslashes($m[7]);
+                        elseif (isset($m[8]))
+                            $atts[] = stripcslashes($m[8]);
+                    }
+                } else {
+                    $atts = ltrim($text);
                 }
 
-                $params = array_map(function($v) {
-                    [$key, $value] = explode("=", $v);
-                    return [$key => str_replace(['"', '\'',], '', $value)];
-                }, explode(" ", trim($matches[2])));
-
-                return $block->renderBlock($twigEnvironment, $matches[1], $params);
+                return $block->renderBlock($twigEnvironment, $matches[1], $atts);
             },
             $content
         );
