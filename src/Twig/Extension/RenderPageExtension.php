@@ -105,26 +105,26 @@ final class RenderPageExtension extends \Twig_Extension
         $content = preg_replace_callback(
             self::BLOCK_PATTERN,
             function($matches) use ($block, $twigEnvironment) {
-
+                $params = [];
                 $text = preg_replace("/[\x{00a0}\x{200b}]+/u", " ", $matches[2]);
                 if ( preg_match_all(self::ATTRIBUTE_PATTERN, $text, $match, PREG_SET_ORDER) ) {
                     foreach ($match as $m) {
                         if (!empty($m[1]))
-                            $atts[strtolower($m[1])] = stripcslashes($m[2]);
+                            $params[strtolower($m[1])] = stripcslashes($m[2]);
                         elseif (!empty($m[3]))
-                            $atts[strtolower($m[3])] = stripcslashes($m[4]);
+                            $params[strtolower($m[3])] = stripcslashes($m[4]);
                         elseif (!empty($m[5]))
-                            $atts[strtolower($m[5])] = stripcslashes($m[6]);
+                            $params[strtolower($m[5])] = stripcslashes($m[6]);
                         elseif (isset($m[7]) and strlen($m[7]))
-                            $atts[] = stripcslashes($m[7]);
+                            $params[] = stripcslashes($m[7]);
                         elseif (isset($m[8]))
-                            $atts[] = stripcslashes($m[8]);
+                            $params[] = stripcslashes($m[8]);
                     }
                 } else {
-                    $atts = ltrim($text);
+                    $params = [ltrim($text)];
                 }
 
-                return $block->renderBlock($twigEnvironment, $matches[1], $atts);
+                return $block->renderBlock($twigEnvironment, $matches[1], $params);
             },
             $content
         );
